@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B.Tech Materials</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            color: #202124;
+            line-height: 1.5;
+        }
+
+        .header {
+            background: white;
+            border-bottom: 1px solid #dadce0;
+            padding: 16px 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 400;
+            color: #5f6368;
+        }
+
+        .search-container {
+            flex: 1;
+            max-width: 600px;
+            margin: 0 40px;
+            position: relative;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 10px 16px 10px 44px;
+            border: 1px solid #dadce0;
+            border-radius: 24px;
+            font-size: 16px;
+            background: #f1f3f4;
+            transition: all 0.2s;
+        }
+
+        .search-box:focus {
+            outline: none;
+            background: white;
+            box-shadow: 0 2px 5px 1px rgba(64,60,67,.16);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #5f6368;
+            font-size: 16px;
+        }
+
+        .breadcrumb {
+            background: white;
+            padding: 12px 24px;
+            border-bottom: 1px solid #dadce0;
+            font-size: 14px;
+        }
+
+        .breadcrumb-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .breadcrumb-item {
+            color: #1a73e8;
+            text-decoration: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+
+        .breadcrumb-item:hover {
+            background: #f1f3f4;
+        }
+
+        .breadcrumb-item.current {
+            color: #202124;
+            pointer-events: none;
+        }
+
+        .breadcrumb-separator {
+            color: #5f6368;
+            font-size: 12px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .view-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .view-btn {
+            padding: 8px 12px;
+            border: 1px solid #dadce0;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .view-btn.active {
+            background: #e8f0fe;
+            border-color: #1a73e8;
+            color: #1a73e8;
+        }
+
+        .view-btn:hover {
+            background: #f1f3f4;
+        }
+
+        /* Grid View */
+        .grid-view {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 16px;
+        }
+
+        .folder-card {
+            background: white;
+            border: 1px solid #dadce0;
+            border-radius: 8px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .folder-card:hover {
+            box-shadow: 0 1px 3px rgba(60,64,67,.3);
+            border-color: #1a73e8;
+        }
+
+        .folder-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+            color: #4285f4;
+        }
+
+        .folder-name {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .folder-info {
+            font-size: 12px;
+            color: #5f6368;
+        }
+
+        /* List View */
+        .list-view {
+            background: white;
+            border: 1px solid #dadce0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .list-header {
+            background: #f8f9fa;
+            padding: 12px 16px;
+            border-bottom: 1px solid #dadce0;
+            display: grid;
+            grid-template-columns: 1fr 120px 100px 80px;
+            gap: 16px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #5f6368;
+            text-transform: uppercase;
+        }
+
+        .list-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid #f1f3f4;
+            display: grid;
+            grid-template-columns: 1fr 120px 100px 80px;
+            gap: 16px;
+            align-items: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .list-item:hover {
+            background: #f8f9fa;
+        }
+
+        .list-item:last-child {
+            border-bottom: none;
+        }
+
+        .item-name {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+        }
+
+        .item-icon {
+            font-size: 20px;
+            color: #4285f4;
+        }
+
+        .item-type {
+            font-size: 12px;
+            color: #5f6368;
+        }
+
+        .item-size {
+            font-size: 12px;
+            color: #5f6368;
+        }
+
+        .download-btn {
+            background: #1a73e8;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background 0.2s;
+        }
+
+        .download-btn:hover {
+            background: #1557b0;
+        }
+
+        .back-btn {
+            background: none;
+            border: 1px solid #dadce0;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #1a73e8;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            transition: all 0.2s;
+        }
+
+        .back-btn:hover {
+            background: #f1f3f4;
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 2px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid #dadce0;
+            background: white;
+            padding: 0 1px;
+            border-radius: 8px 8px 0 0;
+            overflow-x: auto;
+        }
+
+        .filter-tab {
+            background: none;
+            border: none;
+            padding: 12px 16px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #5f6368;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+            white-space: nowrap;
+            min-width: fit-content;
+        }
+
+        .filter-tab:hover {
+            background: #f1f3f4;
+            color: #202124;
+        }
+
+        .filter-tab.active {
+            color: #1a73e8;
+            border-bottom-color: #1a73e8;
+            background: #f8f9fa;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .page-title {
+            font-size: 32px;
+            font-weight: 400;
+            margin-bottom: 24px;
+            color: #202124;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #5f6368;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        @media (max-width: 768px) {
+            .search-container {
+                margin: 0 16px;
+            }
+            
+            .header-content {
+                padding: 0;
+            }
+            
+            .list-header,
+            .list-item {
+                grid-template-columns: 1fr 60px;
+                gap: 8px;
+            }
+            
+            .item-type,
+            .item-size {
+                display: none;
+            }
+            
+            .grid-view {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">📚 B.Tech Materials</div>
+            <div class="search-container">
+                <div class="search-icon">🔍</div>
+                <input type="text" class="search-box" placeholder="Search materials" id="searchBox">
+            </div>
+            <div></div>
+        </div>
+    </div>
+
+    <div class="breadcrumb">
+        <div class="breadcrumb-content" id="breadcrumb">
+            <a href="#" class="breadcrumb-item" onclick="showHome()">My Drive</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Home Page -->
+        <div id="home-page">
+            <div class="toolbar">
+                <h1 class="page-title">Semesters</h1>
+                <div class="view-controls">
+                    <button class="view-btn active" onclick="setView('grid')">⊞ Grid</button>
+                    <button class="view-btn" onclick="setView('list')">☰ List</button>
+                </div>
+            </div>
+
+            <div class="grid-view" id="semesters-grid">
+                <div class="folder-card" onclick="showSemesters('1st Semester')">
+                    <div class="folder-icon">📁</div>
+                    <div class="folder-name">1st Semester</div>
+                    <div class="folder-info">Mathematics, Physics, Chemistry</div>
+                </div>
+                <div class="folder-card" onclick="showSemesters('2nd Semester')">
+                    <div class="folder-icon">📁</div>
+                    <div class="folder-name">2nd Semester</div>
+                    <div class="folder-info">Electronics, Graphics, Advanced Math</div>
+                </div>
+                <div class="folder-card" onclick="showSemesters('3rd Semester')">
+                    <div class="folder-icon">📁</div>
+                    <div class="folder-name">3rd Semester</div>
+                    <div class="folder-info">Data Structures, Digital Logic</div>
+                </div>
+                <div class="folder-card" onclick="showSemesters('4th Semester')">
+                    <div class="folder-icon">📁</div>
+                    <div class="folder-name">4th Semester</div>
+                    <div class="folder-info">Algorithms, Database, Networks</div>
+                </div>
+                <div class="folder-card" onclick="showSemesters('5th Semester')">
+                    <div class="folder-icon">📁</div>
+                    <div class="folder-name">5th Semester</div>
+                    <div class="folder-info">Software Engineering, OS, ML</div>
+                </div>
+                <div class="folder-card" onclick="showSemesters('6th Semester')">
+                    <div class="folder-icon">📁</div>
+                    <div class="folder-name">6th Semester</div>
+                    <div class="folder-info">Web Tech, Cloud, Projects</div>
+                </div>
+                <div class="folder-card" onclick="showSemesters('7th Semester')">
+                    <div class="folder-icon">📁</div>
+                    <div class="folder-name">7th Semester</div>
+                    <div class="folder-info">Advanced Topics, Electives</div>
+                </div>
+                <div class="folder-card" onclick="showSemesters('8th Semester')">
+                    <div class="folder-icon">📁</div>
+                    <div class="folder-name">8th Semester</div>
+                    <div class="folder-info">Final Project, Placement Prep</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Subjects Page -->
+        <div id="subjects-page" class="hidden">
+            <button class="back-btn" onclick="showHome()">← Back</button>
+            
+            <div class="toolbar">
+                <h1 class="page-title" id="semester-title">4th Semester</h1>
+                <div class="view-controls">
+                    <button class="view-btn active" onclick="setView('grid')">⊞ Grid</button>
+                    <button class="view-btn" onclick="setView('list')">☰ List</button>
+                </div>
+            </div>
+
+            <div class="grid-view" id="subjects-grid">
+                <div class="folder-card" onclick="showMaterials('Data Structures')">
+                    <div class="folder-icon">📁</div>
+                    <div class="folder-name">Data Structures</div>
+                    <div class="folder-info">8 files</div>
+                </div>
+                <div class="folder-card" onclick="showMaterials('Database Systems')">
+                    <div class="folder-icon">📁</div>
+                    <div class="folder-name">Database Systems</div>
+                    <div class="folder-info">8 files</div>
+                </div>
+                <div class="folder-card" onclick="showMaterials('Computer Networks')">
+                    <div class="folder-icon">📁</div>
+                    <div class="folder-name">Computer Networks</div>
+                    <div class="folder-info">8 files</div>
+                </div>
+                <div class="folder-card" onclick="showMaterials('Operating Systems')">
+                    <div class="folder-icon">📁</div>
+                    <div class="folder-name">Operating Systems</div>
+                    <div class="folder-info">8 files</div>
+                </div>
+                <div class="folder-card" onclick="showMaterials('Software Engineering')">
+                    <div class="folder-icon">📁</div>
+                    <div class="folder-name">Software Engineering</div>
+                    <div class="folder-info">7 files</div>
+                </div>
+                <div class="folder-card" onclick="showMaterials('Mathematics')">
+                    <div class="folder-icon">📁</div>
+                    <div class="folder-name">Engineering Mathematics</div>
+                    <div class="folder-info">6 files</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Materials Page -->
+        <div id="materials-page" class="hidden">
+            <button class="back-btn" onclick="showSemesters()">← Back</button>
+            
+            <div class="toolbar">
+                <h1 class="page-title" id="subject-title">Data Structures</h1>
+                <div class="view-controls">
+                    <button class="view-btn" onclick="setView('grid')">⊞ Grid</button>
+                    <button class="view-btn active" onclick="setView('list')">☰ List</button>
+                </div>
+            </div>
+
+            <div class="filter-tabs">
+                <button class="filter-tab active" onclick="filterMaterials('all')">All</button>
+                <button class="filter-tab" onclick="filterMaterials('PYP')">PYQ</button>
+                <button class="filter-tab" onclick="filterMaterials('Notes')">Units</button>
+                <button class="filter-tab" onclick="filterMaterials('Book')">Books</button>
+                <button class="filter-tab" onclick="filterMaterials('Manual')">Lab Manual</button>
+                <button class="filter-tab" onclick="filterMaterials('Practice')">Question Bank</button>
+                <button class="filter-tab" onclick="filterMaterials('Reference')">Reference</button>
+            </div>
+
+            <div class="list-view" id="materials-list">
+                <div class="list-header">
+                    <div>Name</div>
+                    <div>Type</div>
+                    <div>Size</div>
+                    <div>Action</div>
+                </div>
+                <!-- Materials will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentView = 'grid';
+        let currentSemester = '';
+        let currentSubject = '';
+        let currentFilter = 'all';
+
+        const materialsData = {
+            'Data Structures': [
+                { name: 'Previous Year Papers 2023', type: 'PYP', size: '2.3 MB', icon: '📄' },
+                { name: 'Previous Year Papers 2022', type: 'PYP', size: '1.8 MB', icon: '📄' },
+                { name: 'Unit 1: Arrays and Strings', type: 'Notes', size: '1.5 MB', icon: '📝' },
+                { name: 'Unit 2: Linked Lists', type: 'Notes', size: '2.1 MB', icon: '📝' },
+                { name: 'Unit 3: Trees and Graphs', type: 'Notes', size: '3.2 MB', icon: '📝' },
+                { name: 'Unit 4: Advanced Algorithms', type: 'Notes', size: '2.8 MB', icon: '📝' },
+                { name: 'Complete Reference Book', type: 'Book', size: '15.7 MB', icon: '📚' },
+                { name: 'Practical Lab Manual', type: 'Manual', size: '4.2 MB', icon: '🔬' },
+                { name: 'Question Bank with Solutions', type: 'Practice', size: '3.1 MB', icon: '❓' },
+                { name: 'Quick Revision Notes', type: 'Reference', size: '800 KB', icon: '⚡' }
+            ],
+            'Database Systems': [
+                { name: 'Previous Year Papers 2023', type: 'PYP', size: '1.9 MB', icon: '📄' },
+                { name: 'Previous Year Papers 2022', type: 'PYP', size: '2.1 MB', icon: '📄' },
+                { name: 'Unit 1: Introduction to DBMS', type: 'Notes', size: '1.8 MB', icon: '📝' },
+                { name: 'Unit 2: SQL and Queries', type: 'Notes', size: '2.5 MB', icon: '📝' },
+                { name: 'Unit 3: Normalization', type: 'Notes', size: '1.7 MB', icon: '📝' },
+                { name: 'Unit 4: Transactions', type: 'Notes', size: '2.2 MB', icon: '📝' },
+                { name: 'Complete Textbook PDF', type: 'Book', size: '12.4 MB', icon: '📚' },
+                { name: 'SQL Practice Exercises', type: 'Practice', size: '950 KB', icon: '💻' },
+                { name: 'Lab Experiments Guide', type: 'Manual', size: '3.2 MB', icon: '🔬' }
+            ],
+            'Computer Networks': [
+                { name: 'Previous Year Papers 2023', type: 'PYP', size: '2.7 MB', icon: '📄' },
+                { name: 'Previous Year Papers 2022', type: 'PYP', size: '2.2 MB', icon: '📄' },
+                { name: 'Unit 1: Network Fundamentals', type: 'Notes', size: '2.1 MB', icon: '📝' },
+                { name: 'Unit 2: OSI and TCP/IP', type: 'Notes', size: '1.9 MB', icon: '📝' },
+                { name: 'Unit 3: Routing Protocols', type: 'Notes', size: '2.8 MB', icon: '📝' },
+                { name: 'Unit 4: Network Security', type: 'Notes', size: '3.1 MB', icon: '📝' },
+                { name: 'Cisco Networking Guide', type: 'Book', size: '18.5 MB', icon: '📚' },
+                { name: 'Lab Experiments Manual', type: 'Manual', size: '5.3 MB', icon: '🔬' },
+                { name: 'Network Practice Questions', type: 'Practice', size: '2.1 MB', icon: '❓' }
+            ],
+            'Operating Systems': [
+                { name: 'Previous Year Papers 2023', type: 'PYP', size: '2.4 MB', icon: '📄' },
+                { name: 'Previous Year Papers 2022', type: 'PYP', size: '2.0 MB', icon: '📄' },
+                { name: 'Unit 1: OS Introduction', type: 'Notes', size: '1.6 MB', icon: '📝' },
+                { name: 'Unit 2: Process Management', type: 'Notes', size: '2.3 MB', icon: '📝' },
+                { name: 'Unit 3: Memory Management', type: 'Notes', size: '2.7 MB', icon: '📝' },
+                { name: 'Unit 4: File Systems', type: 'Notes', size: '2.1 MB', icon: '📝' },
+                { name: 'Operating Systems Textbook', type: 'Book', size: '14.2 MB', icon: '📚' },
+                { name: 'Shell Programming Guide', type: 'Reference', size: '3.8 MB', icon: '💻' },
+                { name: 'OS Lab Manual', type: 'Manual', size: '4.1 MB', icon: '🔬' }
+            ],
+            'Software Engineering': [
+                { name: 'Previous Year Papers 2023', type: 'PYP', size: '1.7 MB', icon: '📄' },
+                { name: 'Unit 1: SDLC Models', type: 'Notes', size: '1.4 MB', icon: '📝' },
+                { name: 'Unit 2: Requirements Engineering', type: 'Notes', size: '1.8 MB', icon: '📝' },
+                { name: 'Unit 3: Design Patterns', type: 'Notes', size: '2.5 MB', icon: '📝' },
+                { name: 'Unit 4: Testing Methodologies', type: 'Notes', size: '2.2 MB', icon: '📝' },
+                { name: 'UML Diagrams Guide', type: 'Reference', size: '4.1 MB', icon: '📊' },
+                { name: 'Project Management Notes', type: 'Reference', size: '2.9 MB', icon: '📋' },
+                { name: 'SE Question Bank', type: 'Practice', size: '1.8 MB', icon: '❓' }
+            ],
+            'Mathematics': [
+                { name: 'Previous Year Papers 2023', type: 'PYP', size: '3.1 MB', icon: '📄' },
+                { name: 'Unit 1: Discrete Mathematics', type: 'Notes', size: '2.4 MB', icon: '📝' },
+                { name: 'Unit 2: Probability & Statistics', type: 'Notes', size: '2.1 MB', icon: '📝' },
+                { name: 'Unit 3: Numerical Methods', type: 'Notes', size: '2.8 MB', icon: '📝' },
+                { name: 'Mathematical Formulas', type: 'Reference', size: '650 KB', icon: '📋' },
+                { name: 'Solved Examples Collection', type: 'Practice', size: '4.7 MB', icon: '💡' },
+                { name: 'Mathematics Textbook', type: 'Book', size: '11.2 MB', icon: '📚' }
+            ]
+        };
+
+        function updateBreadcrumb(items) {
+            const breadcrumb = document.getElementById('breadcrumb');
+            breadcrumb.innerHTML = '';
+            
+            items.forEach((item, index) => {
+                const link = document.createElement('a');
+                link.href = '#';
+                link.className = 'breadcrumb-item';
+                if (index === items.length - 1) {
+                    link.className += ' current';
+                }
+                link.textContent = item.text;
+                if (item.onclick) {
+                    link.onclick = item.onclick;
+                }
+                
+                breadcrumb.appendChild(link);
+                
+                if (index < items.length - 1) {
+                    const separator = document.createElement('span');
+                    separator.className = 'breadcrumb-separator';
+                    separator.textContent = '>';
+                    breadcrumb.appendChild(separator);
+                }
+            });
+        }
+
+        function showHome() {
+            document.getElementById('home-page').classList.remove('hidden');
+            document.getElementById('subjects-page').classList.add('hidden');
+            document.getElementById('materials-page').classList.add('hidden');
+            
+            updateBreadcrumb([
+                { text: 'My Drive' }
+            ]);
+        }
+
+        function showSemesters(semester) {
+            currentSemester = semester || '4th Semester';
+            document.getElementById('home-page').classList.add('hidden');
+            document.getElementById('subjects-page').classList.remove('hidden');
+            document.getElementById('materials-page').classList.add('hidden');
+            
+            document.getElementById('semester-title').textContent = currentSemester;
+            
+            updateBreadcrumb([
+                { text: 'My Drive', onclick: () => showHome() },
+                { text: currentSemester }
+            ]);
+        }
+
+        function showMaterials(subject) {
+            currentSubject = subject;
+            currentFilter = 'all';
+            document.getElementById('home-page').classList.add('hidden');
+            document.getElementById('subjects-page').classList.add('hidden');
+            document.getElementById('materials-page').classList.remove('hidden');
+            
+            document.getElementById('subject-title').textContent = subject;
+            
+            // Reset filter tabs
+            const filterTabs = document.querySelectorAll('.filter-tab');
+            filterTabs.forEach(tab => tab.classList.remove('active'));
+            filterTabs[0].classList.add('active'); // Activate "All" tab
+            
+            renderMaterials();
+            
+            updateBreadcrumb([
+                { text: 'My Drive', onclick: () => showHome() },
+                { text: currentSemester, onclick: () => showSemesters() },
+                { text: subject }
+            ]);
+        }
+
+        function renderMaterials() {
+            const materialsList = document.getElementById('materials-list');
+            const header = materialsList.querySelector('.list-header');
+            materialsList.innerHTML = '';
+            materialsList.appendChild(header);
+            
+            const materials = materialsData[currentSubject] || [];
+            const filteredMaterials = currentFilter === 'all' 
+                ? materials 
+                : materials.filter(material => material.type === currentFilter);
+            
+            if (filteredMaterials.length === 0) {
+                const emptyDiv = document.createElement('div');
+                emptyDiv.className = 'empty-state';
+                emptyDiv.innerHTML = `
+                    <div class="empty-state-icon">📁</div>
+                    <p>No materials found for this filter</p>
+                `;
+                materialsList.appendChild(emptyDiv);
+                return;
+            }
+            
+            filteredMaterials.forEach(material => {
+                const materialDiv = document.createElement('div');
+                materialDiv.className = 'list-item';
+                materialDiv.innerHTML = `
+                    <div class="item-name">
+                        <span class="item-icon">${material.icon}</span>
+                        ${material.name}
+                    </div>
+                    <div class="item-type">${material.type}</div>
+                    <div class="item-size">${material.size}</div>
+                    <button class="download-btn" onclick="downloadMaterial('${material.name}')">
+                        Download
+                    </button>
+                `;
+                materialsList.appendChild(materialDiv);
+            });
+        }
+
+        function filterMaterials(filterType) {
+            currentFilter = filterType;
+            
+            // Update active filter tab
+            const filterTabs = document.querySelectorAll('.filter-tab');
+            filterTabs.forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            renderMaterials();
+        }
+
+        function setView(view) {
+            currentView = view;
+            const viewBtns = document.querySelectorAll('.view-btn');
+            viewBtns.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // This is a placeholder for view switching
+            // In a full implementation, you would change between grid and list layouts
+        }
+
+        function downloadMaterial(materialName) {
+            const link = document.createElement('a');
+            link.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(`This is a sample download for: ${materialName}\n\nThis is a demo website. In a real implementation, this would download the actual file.`);
+            link.download = materialName.replace(/[^a-z0-9]/gi, '_').toLowerCase() + '.pdf';
+            link.click();
+            
+            const btn = event.target;
+            const originalText = btn.textContent;
+            btn.textContent = 'Downloaded';
+            btn.style.background = '#34a853';
+            
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.style.background = '#1a73e8';
+            }, 2000);
+        }
+
+        // Initialize
+        showHome();
+    </script>
+</body>
+</html>
