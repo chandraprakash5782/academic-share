@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSE Study Hub | BTech Materials Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            padding: 1rem 2rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .navbar.scrolled {
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo::before {
+            content: "📚";
+            font-size: 1.5rem;
+        }
+
+        .navbar.scrolled .logo {
+            color: #1e3c72;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-weight: 500;
+        }
+
+        .navbar.scrolled .nav-links a {
+            color: #333;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            z-index: 2;
+            max-width: 900px;
+            padding: 2rem;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards 0.5s;
+            font-weight: 800;
+            background: linear-gradient(45deg, #fff, #a8d8ea);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards 0.7s;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards 0.9s;
+        }
+
+        .cta-button {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a6f);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 600;
+        }
+
+        .cta-button.secondary {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.4);
+        }
+
+        .floating-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .floating-element {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .main-content {
+            padding: 4rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            font-weight: 800;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            margin-bottom: 4rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .semester-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .semester-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .semester-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .semester-card:hover::before {
+            left: 100%;
+        }
+
+        .semester-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .semester-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .semester-number {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a6f);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .semester-info h3 {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .semester-info p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .subjects-preview {
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .subjects-preview li {
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+            font-size: 0.95rem;
+        }
+
+        .subjects-preview li::before {
+            content: "📖";
+            position: absolute;
+            left: 0;
+            font-size: 0.8rem;
+        }
+
+        .view-materials-btn {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .view-materials-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(68, 160, 141, 0.4);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 2% auto;
+            padding: 0;
+            border-radius: 25px;
+            width: 95%;
+            max-width: 1000px;
+            max-height: 90vh;
+            overflow: hidden;
+            position: relative;
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        .modal-header {
+            background: linear-gradient(45deg, #1e3c72, #2a5298);
+            color: white;
+            padding: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .close {
+            font-size: 2rem;
+            cursor: pointer;
+            color: white;
+            transition: all 0.3s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .close:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 2rem;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .subjects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .subject-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 1.5rem;
+            border-left: 4px solid #ff6b6b;
+            transition: all 0.3s ease;
+        }
+
+        .subject-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .subject-card h4 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .materials-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .material-tag {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .material-tag:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .material-tag.pdf { background: linear-gradient(45deg, #ff6b6b, #ee5a6f); }
+        .material-tag.pyp { background: linear-gradient(45deg, #4ecdc4, #44a08d); }
+        .material-tag.qb { background: linear-gradient(45deg, #45b7d1, #96c93d); }
+        .material-tag.assignment { background: linear-gradient(45deg, #f093fb, #f5576c); }
+        .material-tag.lab { background: linear-gradient(45deg, #ffecd2, #fcb69f); color: #333; }
+
+        .quick-access {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 3rem;
+            margin: 4rem 0;
+            text-align: center;
+        }
+
+        .quick-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .quick-link {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 20px;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .quick-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-5px);
+        }
+
+        .quick-link h4 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer {
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            text-align: center;
+            padding: 3rem 2rem;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { 
+                transform: translateY(0px) rotate(0deg);
+                opacity: 0.7;
+            }
+            50% { 
+                transform: translateY(-30px) rotate(180deg);
+                opacity: 1;
+            }
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .semester-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .subjects-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-links {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .search-bar {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .search-input {
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            padding: 1rem 1.5rem;
+            border-radius: 25px;
+            width: 100%;
+            max-width: 500px;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .search-input::placeholder {
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-content">
+            <a href="#" class="logo">CSE Study Hub</a>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#materials">Materials</a></li>
+                <li><a href="#quick-access">Quick Access</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero" id="home">
+        <div class="floating-elements">
+            <div class="floating-element" style="width: 100px; height: 60px; top: 10%; left: 10%; animation-delay: 0s;"></div>
+            <div class="floating-element" style="width: 80px; height: 80px; top: 20%; right: 15%; animation-delay: 2s;"></div>
+            <div class="floating-element" style="width: 120px; height: 40px; bottom: 20%; left: 20%; animation-delay: 4s;"></div>
+            <div class="floating-element" style="width: 90px; height: 70px; bottom: 30%; right: 10%; animation-delay: 1s;"></div>
+            <div class="floating-element" style="width: 70px; height: 90px; top: 50%; left: 5%; animation-delay: 3s;"></div>
+        </div>
+        <div class="hero-content">
+            <h1>Your Ultimate Study Companion</h1>
+            <p>Access comprehensive study materials for BTech CSE - Unit-wise PDFs, Previous Year Papers, Question Banks, Assignments, Lab Manuals and more!</p>
+            <div class="hero-buttons">
+                <a href="#materials" class="cta-button">Browse Materials</a>
+                <a href="#quick-access" class="cta-button secondary">Quick Access</a>
+            </div>
+        </div>
+    </section>
+
+    <main class="main-content">
+        <section class="search-bar">
+            <h3 style="color: white; margin-bottom: 1rem;">Search Study Materials</h3>
+            <input type="text" class="search-input" placeholder="Search by subject, semester, or material type..." id="searchInput">
+        </section>
+
+        <section id="materials">
+            <h2 class="section-title">Study Materials</h2>
+            <p class="section-subtitle">Choose your semester to access comprehensive study resources</p>
+            <div class="semester-grid">
+                <!-- Semester cards will be generated by JavaScript -->
+            </div>
+        </section>
+
+        <section class="quick-access" id="quick-access">
+            <h2 class="section-title">Quick Access</h2>
+            <p class="section-subtitle">Jump directly to frequently accessed materials</p>
+            <div class="quick-links">
+                <a href="#" class="quick-link" onclick="showAllPYP()">
+                    <h4>📄 All Previous Year Papers</h4>
+                    <p>Complete collection of PYP across all semesters</p>
+                </a>
+                <a href="#" class="quick-link" onclick="showAllQB()">
+                    <h4>📚 Question Banks</h4>
+                    <p>Comprehensive question banks for exam prep</p>
+                </a>
+                <a href="#" class="quick-link" onclick="showLabManuals()">
+                    <h4>🔬 Lab Manuals</h4>
+                    <p>Practical guides and lab experiments</p>
+                </a>
+                <a href="#" class="quick-link" onclick="showAssignments()">
+                    <h4>📝 Assignments</h4>
+                    <p>Course assignments and solutions</p>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer" id="contact">
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="#">About</a>
+                <a href="#">Contact</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Contribute</a>
+            </div>
+            <p>&copy; 2025 CSE Study Hub. Empowering students with quality education resources.</p>
+            <p style="margin-top: 0.5rem; color: rgba(255,255,255,0.6); font-size: 0.9rem;">Made with ❤️ for CSE students</p>
+        </div>
+    </footer>
+
+    <!-- Modal -->
+    <div id="materialsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Semester Materials</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body" id="modalContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // Study materials data
+        const semesterData = {
+            1: {
+                title: "Foundation Semester",
+                subjects: [
+                    {
+                        name: "Engineering Mathematics I",
+                        code: "MA101",
+                        materials: ["Unit 1-5 PDFs", "PYP 2019-2024", "Question Bank", "Assignments", "Formula Sheet"]
+                    },
+                    {
+                        name: "Engineering Physics", 
+                        code: "PH101",
+                        materials: ["Theory Notes", "PYP Collection", "Lab Manual", "Practical Files", "MCQ Bank"]
+                    },
+                    {
+                        name: "Programming for Problem Solving (C)",
+                        code: "CS101", 
+                        materials: ["Complete Notes", "Program Examples", "Lab Exercises", "PYP Solutions", "Practice Problems"]
+                    },
+                    {
+                        name: "Engineering Graphics",
+                        code: "ME101",
+                        materials: ["Drawing Sheets", "CAD Files", "Reference Books", "Practice Sets", "Exam Patterns"]
+                    },
+                    {
+                        name: "English Communication",
+                        code: "EN101",
+                        materials: ["Grammar Notes", "Essay Topics", "Speaking Practice", "Previous Papers", "Writing Tips"]
+                    }
+                ]
+            },
+            2: {
+                title: "Core Fundamentals",
+                subjects: [
+                    {
+                        name: "Engineering Mathematics II",
+                        code: "MA102",
+                        materials: ["Calculus Notes", "PYP 2020-2024", "Solution Manual", "Quick Revision", "Important Formulas"]
+                    },
+                    {
+                        name: "Data Structures using C",
+                        code: "CS201",
+                        materials: ["Complete DSA Notes", "Code Examples", "Algorithm Analysis", "Lab Programs", "Interview Prep"]
+                    },
+                    {
+                        name: "Digital Logic Design",
+                        code: "CS202",
+                        materials: ["Logic Gates Notes", "Circuit Diagrams", "Simulation Files", "PYP Solutions", "Boolean Algebra"]
+                    },
+                    {
+                        name: "Basic Electrical Engineering",
+                        code: "EE101",
+                        materials: ["Circuit Analysis", "AC/DC Concepts", "Lab Manual", "Measurement Techniques", "Safety Guidelines"]
+                    },
+                    {
+                        name: "Environmental Science",
+                        code: "ES101",
+                        materials: ["Environmental Notes", "Case Studies", "Field Reports", "Current Affairs", "Project Ideas"]
+                    }
+                ]
+            },
+            3: {
+                title: "Programming & Systems",
+                subjects: [
+                    {
+                        name: "Object Oriented Programming (Java)",
+                        code: "CS301",
+                        materials: ["Java Complete Guide", "OOP Concepts", "Practice Programs", "Design Patterns", "Project Examples"]
+                    },
+                    {
+                        name: "Database Management Systems",
+                        code: "CS302",
+                        materials: ["SQL Tutorial", "ER Diagrams", "Normalization Guide", "Query Examples", "Lab Exercises"]
+                    },
+                    {
+                        name: "Computer Networks",
+                        code: "CS303",
+                        materials: ["Network Protocols", "OSI Model Notes", "Practical Labs", "Wireshark Tutorials", "Security Basics"]
+                    },
+                    {
+                        name: "Operating Systems",
+                        code: "CS304",
+                        materials: ["OS Concepts", "Process Management", "Memory Management", "File Systems", "Shell Programming"]
+                    },
+                    {
+                        name: "Software Engineering",
+                        code: "CS305",
+                        materials: ["SDLC Models", "UML Diagrams", "Testing Methods", "Project Management", "Case Studies"]
+                    }
+                ]
+            },
+            4: {
+                title: "Advanced Concepts",
+                subjects: [
+                    {
+                        name: "Analysis and Design of Algorithms",
+                        code: "CS401",
+                        materials: ["Algorithm Notes", "Complexity Analysis", "Coding Problems", "Dynamic Programming", "Graph Algorithms"]
+                    },
+                    {
+                        name: "Computer Graphics",
+                        code: "CS402",
+                        materials: ["Graphics Programming", "OpenGL Tutorials", "2D/3D Transformations", "Animation Projects", "Rendering Techniques"]
+                    },
+                    {
+                        name: "Theory of Computation",
+                        code: "CS403",
+                        materials: ["Automata Theory", "Regular Languages", "Context-Free Grammar", "Turing Machines", "Complexity Classes"]
+                    },
+                    {
+                        name: "Microprocessors",
+                        code: "CS404",
+                        materials: ["8086 Programming", "Assembly Language", "Interfacing Circuits", "Lab Experiments", "Embedded Systems"]
+                    },
+                    {
+                        name: "Web Technologies",
+                        code: "CS405",
+                        materials: ["HTML/CSS/JS", "Backend Development", "Database Integration", "Project Templates", "Responsive Design"]
+                    }
+                ]
+            },
+            5: {
+                title: "Specialization Begins",
+                subjects: [
+                    {
+                        name: "Machine Learning",
+                        code: "CS501",
+                        materials: ["ML Algorithms", "Python Libraries", "Dataset Examples", "Project Ideas", "Research Papers"]
+                    },
+                    {
+                        name: "Information Security",
+                        code: "CS502",
+                        materials: ["Cryptography Notes", "Security Protocols", "Ethical Hacking", "Tools & Techniques", "Case Studies"]
+                    },
+                    {
+                        name: "Mobile App Development",
+                        code: "CS503",
+                        materials: ["Android Studio", "Flutter/React Native", "App Templates", "Publishing Guide", "UI/UX Resources"]
+                    },
+                    {
+                        name: "Cloud Computing",
+                        code: "CS504",
+                        materials: ["AWS/Azure Notes", "Cloud Architecture", "Deployment Guides", "Cost Optimization", "Migration Strategies"]
+                    },
+                    {
+                        name: "Artificial Intelligence",
+                        code: "CS505",
+                        materials: ["AI Fundamentals", "Expert Systems", "Neural Networks", "NLP Basics", "Computer Vision"]
+                    }
+                ]
+            },
+            6: {
+                title: "Industry Focus",
+                subjects: [
+                    {
+                        name: "Data Mining and Analytics",
+                        code: "CS601",
+                        materials: ["Data Mining Tools", "Statistical Analysis", "Big Data Concepts", "Visualization Techniques", "Business Intelligence"]
+                    },
+                    {
+                        name: "Internet of Things",
+                        code: "CS602",
+                        materials: ["IoT Protocols", "Sensor Networks", "Arduino/Raspberry Pi", "Cloud Integration", "Smart City Projects"]
+                    },
+                    {
+                        name: "Blockchain Technology",
+                        code: "CS603",
+                        materials: ["Blockchain Basics", "Smart Contracts", "Cryptocurrency", "DApp Development", "Use Cases"]
+                    },
+                    {
+                        name: "DevOps and Containerization",
+                        code: "CS604",
+                        materials: ["Docker/Kubernetes", "CI/CD Pipelines", "Infrastructure as Code", "Monitoring Tools", "Best Practices"]
+                    },
+                    {
+                        name: "Advanced Database Systems",
+                        code: "CS605",
+                        materials: ["NoSQL Databases", "Distributed Systems", "Performance Tuning", "Data Warehousing", "ETL Processes"]
+                    }
+                ]
+            },
+            7: {
+                title: "Research & Development",
+                subjects: [
+                    {
+                        name: "Deep Learning",
+                        code: "CS701",
+                        materials: ["Neural Networks", "TensorFlow/PyTorch", "CNN/RNN Models", "Transfer Learning", "Research Papers"]
+                    },
+                    {
+                        name: "Computer Vision",
+                        code: "CS702",
+                        materials: ["Image Processing", "OpenCV Library", "Object Detection", "Facial Recognition", "Medical Imaging"]
+                    },
+                    {
+                        name: "Natural Language Processing",
+                        code: "CS703",
+                        materials: ["Text Processing", "Sentiment Analysis", "Chatbot Development", "Language Models", "NLTK/SpaCy"]
+                    },
+                    {
+                        name: "Distributed Systems",
+                        code: "CS704",
+                        materials: ["System Design", "Microservices", "Load Balancing", "Consensus Algorithms", "Fault Tolerance"]
+                    },
+                    {
+                        name: "Major Project I",
+                        code: "
